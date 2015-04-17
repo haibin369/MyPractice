@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.haibin369</groupId>
+    <artifactId>J2EEConfig</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>../JavaMail</module>
+        <module>../JMS</module>
+        <module>../JNDI</module>
+        <module>../EJB</module>
+        <module>../JTA</module>
+        <module>../RMIClient</module>
+        <module>../RMIServer</module>
+        <module>../WebService</module>
+        <module>../WebServiceClient</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>7.0</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>mail</artifactId>
+                <version>1.4.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sun.jndi</groupId>
+                <artifactId>fscontext</artifactId>
+                <version>1.2</version>
+                <scope>system</scope>
+                <systemPath>${basedir}/../J2EEConfig/lib/fscontext.jar</systemPath>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sun.jndi</groupId>
+                <artifactId>providerutil</artifactId>
+                <version>1.2</version>
+                <scope>system</scope>
+                <systemPath>${basedir}/../J2EEConfig/lib/providerutil.jar</systemPath>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

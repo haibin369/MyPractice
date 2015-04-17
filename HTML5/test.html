@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600"></canvas>
+<script type="text/javascript">
+    //获取canvas元素及其相应的context
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    //设置字体
+    context.font="30px consolas";
+
+    //描绘、填充文字
+    context.strokeText("Some Text.", 100, 100);
+    context.fillText("Some Text.", 100, 200);
+</script>
+</body>
+</html>

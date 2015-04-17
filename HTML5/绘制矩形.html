@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>绘制矩形</title>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600">
+</canvas>
+<script type="text/javascript">
+    //获取canvas元素及其相应的context
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    //设置填充样式并填充矩形
+    context.fillStyle = "BLUE";
+    context.fillRect(200, 150, 200, 100);
+
+    //设置边框样式、线宽并绘制矩形边框
+    context.strokeStyle = "RED";
+    context.lineWidth=5;
+    context.strokeRect(100, 100, 400, 200);
+
+    //清除指定矩形区域的图形，使之透明
+    context.clearRect(250, 175, 100, 50);
+</script>
+</body>
+</html>

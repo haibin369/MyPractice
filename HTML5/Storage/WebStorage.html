@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        function save() {
+            var isLocal = document.getElementById("type").checked;
+            var msg = document.getElementById("input").value;
+            if (isLocal) {
+                //本地储存
+                localStorage.setItem("msg", msg);
+            } else {
+                //会话储存
+                sessionStorage.setItem("msg", msg);
+            }
+        }
+
+        function load() {
+            var isLocal = document.getElementById("type").checked;
+            var msg;
+            if (isLocal) {
+                //从本地储存中获取数据
+                msg = localStorage.getItem("msg");
+            } else {
+                //从会话储存中获取数据
+                msg = sessionStorage.getItem("msg");
+            }
+            document.getElementById("msg").innerHTML = msg;
+        }
+    </script>
+</head>
+<body>
+<label for="input">保存内容：</label><input type="text" id="input"/><br/>
+<label for="msg">读取内容：</label><span id="msg"></span><br/>
+<label for="type">本地储存</label><input type="checkbox" id="type" name="type"/><br/>
+<button onclick="save();">保存数据</button><br/>
+<button onclick="load();">读取数据</button>
+</body>
+</html>

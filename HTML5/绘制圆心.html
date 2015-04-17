@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600">
+</canvas>
+<script type="text/javascript">
+    //获取canvas元素及其相应的context
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    for (var i = 0; i < 10; i++) {
+        //开始路径、画圆、结束路径、填充
+//        context.beginPath();
+        context.arc(i * 25, i * 25, i * 10, 0, Math.PI * 2, true);
+//        context.closePath();
+        context.fillStyle = "RGBA(255, 0, 0, 0.25)";
+        context.fill();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="config/datasource.properties"/>
+
+    <typeAliases>
+        <typeAlias type="org.haibin369.mybatis.model.User" alias="User"/>
+        <typeAlias type="org.haibin369.mybatis.model.Article" alias="Article"/>
+    </typeAliases>
+
+    <!--<environments default="development">-->
+        <!--<environment id="MySQL">-->
+            <!--<transactionManager type="JDBC"/>-->
+            <!--<dataSource type="POOLED">-->
+                <!--<property name="driver" value="${driver}"/>-->
+                <!--<property name="url" value="${url}"/>-->
+                <!--<property name="username" value="${username}"/>-->
+                <!--<property name="password" value="${password}"/>-->
+            <!--</dataSource>-->
+        <!--</environment>-->
+    <!--</environments>-->
+
+    <mappers>
+        <mapper resource="mapper/User.xml"/>
+    </mappers>
+</configuration>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>HTML5 Web SQL Database</title>
+    <style type="text/css">
+        table {
+            width: 300px;
+            border-collapse: collapse;
+            border: 1px solid GRAY;
+        }
+
+        td {
+            border: 1px solid GRAY;
+        }
+    </style>
+    <script type="text/javascript">
+        function save() {
+            var name = document.getElementById("name").value;
+            var tel = document.getElementById("tel").value;
+            var remark = document.getElementById("remark").value;
+
+            var database = openDatabase("testDB", "1.0", "My Test DB", 2 * 1024 * 1024);
+            database.transaction(function (tx) {
+                var sql = "CREATE TABLE IF NOT EXISTS tel_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name UNIQUE, tel NOT NULL, remark)";
+                tx.executeSql(sql, null, null, function (tx, error) {
+                    alert("执行脚本出错: " + error.message);
+                });
+            });
+
+            database.transaction(function (tx) {
+                var sql = "INSERT INTO tel_list VALUES (?, ?, ?, ?)";
+                tx.executeSql(sql, [null, name, tel, remark], null, function(tx, error) {
+                    alert("执行脚本出错: " + error.message);
+                });
+            });
+        }
+
+        function refresh() {
+            var database = openDatabase("testDB", "1.0", "My Test DB", 2 * 1024 * 1024);
+            database.transaction(function (tx) {
+                var sql = "SELECT * FROM tel_list ORDER BY ID";
+                tx.executeSql(sql, null, function(tx, resultSet) {
+                    var rowCount = resultSet.rows.length;
+                    for (var i = 0; i < rowCount; i++) {
+                        var item = resultSet.rows.item(i);
+                        alert(item.id + item.name + item.tel + item.remark);
+                    }
+                }, function (tx, error) {
+                    alert("执行脚本出错: " + error.message);
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+<section>
+    <h3></h3>
+    <table id="telList">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Tel</th>
+            <th>Remark</th>
+        </tr>
+    </table>
+    <button onclick="refresh()">Refresh</button>
+</section>
+<section>
+    <h3>Operation</h3>
+    <label for="name">Name：</label>
+    <input type="text" id="name"/><br/>
+    <label for="tel">Tel：</label>
+    <input type="tel" id="tel"/><br/>
+    <label for="remark">Remark：</label>
+    <input type="text" id="remark"/><br/>
+    <button onclick="save()">Save</button>
+</section>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="students" class="org.haibin369.spring.aop.Students"/>
+    <bean id="myTeacher" class="org.haibin369.spring.aop.MyTeacher"/>
+
+    <aop:aspectj-autoproxy/>
+
+    <!--<aop:config>-->
+        <!--<aop:aspect ref="students">-->
+            <!--<aop:pointcut id="classStart" expression="execution(* org.haibin369.spring.aop.MyTeacher.classStart(..))" />-->
+            <!--<aop:pointcut id="classStartWithName" expression="execution(* org.haibin369.spring.aop.MyTeacher.classStart(..)) and args(name)"/>-->
+            <!--<aop:pointcut id="classOver" expression="execution(* org.haibin369.spring.aop.MyTeacher.classOver(..))"/>-->
+            <!--<aop:pointcut id="teachSomething" expression="execution(* org.haibin369.spring.aop.MyTeacher.teachSomething(..))"/>-->
+
+            <!--<aop:before method="hello" pointcut-ref="classStartWithName" arg-names="name"/>-->
+            <!--<aop:after method="startStudy" pointcut-ref="classStart"/>-->
+
+            <!--<aop:around method="talk" pointcut-ref="teachSomething"/>-->
+
+            <!--&lt;!&ndash;<aop:before method="endStudy" pointcut-ref="classOver"/>&ndash;&gt;-->
+            <!--<aop:after method="goodBye" pointcut-ref="classOver"/>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config>-->
+</beans>
