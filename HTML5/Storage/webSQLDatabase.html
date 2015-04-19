@@ -13,49 +13,69 @@
         td {
             border: 1px solid GRAY;
         }
+
+        label{
+            display: inline-block;
+            width: 60px;
+        }
     </style>
     <script type="text/javascript">
+        var database = openDatabase("testDB", "1.0", "My Test DB", 2 * 1024 * 1024);
+
         function save() {
             var name = document.getElementById("name").value;
             var tel = document.getElementById("tel").value;
             var remark = document.getElementById("remark").value;
 
-            var database = openDatabase("testDB", "1.0", "My Test DB", 2 * 1024 * 1024);
-            database.transaction(function (tx) {
-                var sql = "CREATE TABLE IF NOT EXISTS tel_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name UNIQUE, tel NOT NULL, remark)";
-                tx.executeSql(sql, null, null, function (tx, error) {
-                    alert("执行脚本出错: " + error.message);
-                });
-            });
+            var sql = "CREATE TABLE IF NOT EXISTS tel_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name UNIQUE, tel NOT NULL, remark)";
+            executeSQL(sql);
 
-            database.transaction(function (tx) {
-                var sql = "INSERT INTO tel_list VALUES (?, ?, ?, ?)";
-                tx.executeSql(sql, [null, name, tel, remark], null, function(tx, error) {
-                    alert("执行脚本出错: " + error.message);
-                });
-            });
+            sql = "INSERT INTO tel_list (name, tel, remark) VALUES (?, ?, ?)";
+            executeSQL(sql, [name, tel, remark]);
         }
 
         function refresh() {
-            var database = openDatabase("testDB", "1.0", "My Test DB", 2 * 1024 * 1024);
-            database.transaction(function (tx) {
-                var sql = "SELECT * FROM tel_list ORDER BY ID";
-                tx.executeSql(sql, null, function(tx, resultSet) {
-                    var rowCount = resultSet.rows.length;
-                    for (var i = 0; i < rowCount; i++) {
-                        var item = resultSet.rows.item(i);
-                        alert(item.id + item.name + item.tel + item.remark);
-                    }
-                }, function (tx, error) {
-                    alert("执行脚本出错: " + error.message);
-                });
+            var sql = "SELECT * FROM tel_list ORDER BY ID";
+            executeSQL(sql, null, function (tx, resultSet) {
+                clearTelList();
+
+                var telList = document.getElementById("telList");
+                var rowCount = resultSet.rows.length;
+                for (var i = 0; i < rowCount; i++) {
+                    var item = resultSet.rows.item(i);
+                    var itemHtml = document.createElement("tr");
+                    itemHtml.setAttribute("id", item.id);
+                    itemHtml.innerHTML = "<td>" + item.id + "</td><td>" + item.name + "</td><td>" + item.tel + "</td><td>" + item.remark + "</td>";
+                    telList.appendChild(itemHtml);
+                }
             });
+        }
+
+        function clearTelList() {
+            var telList = document.getElementById("telList");
+            var items = telList.querySelectorAll("tr[id]");
+            for (var i = 0; i < items.length; i++) {
+                items[i].remove();
+            }
+        }
+
+        function executeSQL(sql, param, callBack) {
+            database.transaction(function (tx) {
+                tx.executeSql(sql, param, callBack, function (tx, error) {
+                    alert("Executed SQL with error:\n " + error.message);
+                });
+            })
+        }
+
+        function clearDatabase() {
+            executeSQL("DROP TABLE tel_list");
+            clearTelList();
         }
     </script>
 </head>
 <body>
 <section>
-    <h3></h3>
+    <h3>TEL List</h3>
     <table id="telList">
         <tr>
             <th>ID</th>
@@ -65,6 +85,8 @@
         </tr>
     </table>
     <button onclick="refresh()">Refresh</button>
+    &nbsp;
+    <button onclick="clearDatabase()">Clear</button>
 </section>
 <section>
     <h3>Operation</h3>
