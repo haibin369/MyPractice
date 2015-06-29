@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Full Screen API</title>
+    <script>
+        var requestFullScreen, exitFullScreen, isFullScreen, fullScreenChange;
+        (function init() {
+            var ele = document.documentElement;
+            if (ele.requestFullScreen) {
+                requestFullScreen = "requestFullScreen";
+                exitFullScreen = "exitFullScreen";
+                isFullScreen = "fullscreen";
+                fullScreenChange = "fullscreenchange";
+            } else if (ele.mozRequestFullScreen) {
+                requestFullScreen = "mozRequestFullScreen";
+                exitFullScreen = "mozCancelFullScreen";
+                isFullScreen = "mozFullScreen";
+                fullScreenChange = "mozfullscreenchange"
+            } else if (ele.webkitRequestFullScreen) {
+                requestFullScreen = "webkitRequestFullScreen";
+                exitFullScreen = "webkitCancelFullScreen";
+                isFullScreen = "webkitIsFullScreen";
+                fullScreenChange = "webkitfullscreenchange";
+            } else if (ele.msRequestFullScreen) {
+                requestFullScreen = "msRequestFullScreen";
+                exitFullScreen = "msExitFullScreen";
+                isFullScreen = "fullScreen";
+                fullScreenChange = "msfullscreenchange";
+            }
+        })();
+
+        function toggleFullScreen() {
+            if (document[isFullScreen]) {
+                document[exitFullScreen]();
+            } else {
+                document.getElementById("testSection")[requestFullScreen]();
+            }
+        }
+
+        function showFeatureSupportMsg() {
+            var element = document.body;
+            var message = "";
+            message += "element.requestFullScreen: " + element.requestFullScreen + "<br/>";
+            message += "element.mozRequestFullScreen: " + element.mozRequestFullScreen + "<br/>";
+            message += "element.webkitRequestFullScreen: " + element.webkitRequestFullScreen + "<br/>";
+            message += "element.msRequestFullScreen: " + element.msRequestFullScreen + "<br/>";
+            message += "<br/>";
+
+            message += "document.exitFullScreen: " + document.exitFullScreen + "<br/>";
+            message += "document.mozCancelFullScreen: " + document.mozCancelFullScreen + "<br/>";
+            message += "document.webkitCancelFullScreen: " + document.webkitCancelFullScreen + "<br/>";
+            message += "document.msExitFullScreen: " + document.msExitFullScreen + "<br/>";
+            message += "<br/>";
+
+            message += "document.fullscreen: " + document.fullscreen + "<br/>";
+            message += "document.mozFullScreen: " + document.mozFullScreen + "<br/>";
+            message += "document.webkitIsFullScreen: " + document.webkitIsFullScreen + "<br/>";
+            message += "document.msFullscreenElement: " + document.msFullscreenElement + "<br/>";
+
+            var p = document.createElement("p");
+            p.innerHTML = message;
+            document.getElementById("messageSection").appendChild(p);
+        }
+
+        document.addEventListener(fullScreenChange, function () {
+            var date = new Date();
+            var p = document.createElement("p");
+            p.innerHTML = date + ", " + "is full screen: " + document[isFullScreen];
+            document.getElementById("testSection").appendChild(p);
+        }, false);
+    </script>
+</head>
+<body onload="showFeatureSupportMsg()">
+<section id="testSection">
+    <p>This is a test.</p>
+    <button onclick="toggleFullScreen()">Toggle Full Screen</button>
+</section>
+<section id="messageSection"></section>
+</body>
+</html>

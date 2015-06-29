@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Page Visibility</title>
+    <script>
+        var hidden, state, visibilityChange, visibilityState;
+        if (typeof document.hidden !== "undefined") {
+            hidden = "hidden";
+            visibilityChange = "visibilitychange";
+            visibilityState = "visibilityState";
+        } else if (typeof document.msHidden !== "undefined") {
+            hidden = "msHidden";
+            visibilityChange = "msvisibilitychange";
+            visibilityState = "msVisibilityState";
+        }
+        else if (typeof document.mozHidden !== "undefined") {
+            hidden = "mozHidden";
+            visibilityChange = "mozvisibilitychange";
+            visibilityState = "mozVisibilityState";
+        } else if (typeof document.webkitHidden !== "undefined") {
+            hidden = "webkitHidden";
+            visibilityChange = "webkitvisibilitychange";
+            state = "webkitVisibilityState";
+        }
+        document.addEventListener(visibilityChange, function () {
+            var date = new Date();
+            var p = document.createElement("p");
+            p.innerHTML = date + ", " + "Visibility State: " + document[visibilityState] + ", Hidden: " + document[hidden];
+            document.body.appendChild(p);
+        }, false);
+    </script>
+</head>
+<body onload="showFeatureSupportMsg()">
+<section id="featureSupportMsg"></section>
+</body>
+</html>
