@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Indexed DB</title>
+    <style>
+        label {
+            display: inline-block;
+            width: 70px;
+        }
+
+        table {
+            width: 300px;
+            border: 1px solid gray;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid gray;
+        }
+    </style>
+    <script>
+        var db;
+
+        function initDB() {
+            var dbVersion = 8;
+            var dbRequest = indexedDB.open("tetDB", dbVersion);
+            dbRequest.onsuccess = function (event) {
+                db = event.target.result;
+                alert("Indexed DB connected successfully.")
+            };
+            dbRequest.onerror = function () {
+                alert("Failed to connect indexed DB.");
+            };
+            dbRequest.onupgradeneeded = function (event) {
+                db = event.target.result;
+
+                //Create object store
+                var objStoreName = "User";
+                var params = {
+                    keyPath: "id",
+                    autoIncrement: true
+                };
+                var objStore = db.createObjectStore(objStoreName, params);
+
+                //Create index
+                objStore.createIndex("idx_id", "id", {unique: true});
+                objStore.createIndex("idx_name", "name");
+
+                var newVersion = event.newVersion;
+                var oldVersion = event.oldVersion;
+                alert("DB upgraded successfully from version " + oldVersion + " to version " + newVersion + ".");
+            };
+        }
+
+        function search() {
+            clearTelList();
+            var telList = document.getElementById("telList");
+            var idFrom = document.getElementById("idFrom").value;
+            var idTo = document.getElementById("idTo").value;
+            var name = document.getElementById("nameSearch").value;
+
+            var keyRange;
+            var request;
+            var tx = db.transaction(["User"], "readonly");
+            var objStore = tx.objectStore("User");
+            if (name) {
+                keyRange = IDBKeyRange.only(name);
+                request = objStore.index("idx_name").openCursor(keyRange, IDBCursor.NEXT);
+            } else {
+                if (idFrom != "") {
+                    if (idTo != "") {
+                        keyRange = IDBKeyRange.bound(idFrom, idTo, false, false);
+                    } else {
+                        keyRange = IDBKeyRange.lowerBound(idFrom, false);
+                    }
+                } else if (idFrom == "" && idTo != "") {
+                    keyRange = IDBKeyRange.upperBound(idTo, false);
+                }
+                request = objStore.openCursor(keyRange, IDBCursor.NEXT);
+            }
+
+            request.onsuccess = function (event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                    var user = cursor.value;
+                    var tr = document.createElement("tr");
+                    tr.setAttribute("id", user.id);
+                    tr.innerHTML = "<td>" + user.id + "</td><td>" + user.name + "</td><td>" + user.tel + "</td><td>" + user.remark + "</td>";
+                    telList.appendChild(tr);
+                    cursor.continue();
+                }
+            }
+        }
+
+        function save() {
+            var id = document.getElementById("id").value;
+            var name = document.getElementById("name").value;
+            var tel = document.getElementById("tel").value;
+            var remark = document.getElementById("remark").value;
+            var isOverwrite = document.getElementById("overwrite").checked;
+            var user = {
+                "id": id,
+                "name": name,
+                "tel": tel,
+                "remark": remark
+            };
+
+            var tx = db.transaction(["User"], "readwrite");
+            var objStore = tx.objectStore("User");
+            var request = isOverwrite ? objStore.put(user) : objStore.add(user);
+            request.onerror = function () {
+                alert("Failed to save.");
+            }
+        }
+
+        function generateKeyRange() {
+            var idFrom = document.getElementById("idFrom").value;
+            var idTo = document.getElementById("idTo").value;
+            var name = document.getElementById("nameSearch").value;
+
+            if (name) {
+                return IDBKeyRange.only(name);
+            } else {
+                if (idFrom != "") {
+                    if (idTo != "") {
+                        return IDBKeyRange.bound(idFrom, idTo, true, true);
+                    } else {
+                        return IDBKeyRange.lowerBound(idFrom, true);
+                    }
+                } else if (idFrom == "" && idTo != "") {
+                    return IDBKeyRange.upperBound(idTo, true);
+                }
+            }
+
+            return null;
+        }
+
+        function clearTelList() {
+            var telList = document.getElementById("telList");
+            var items = telList.querySelectorAll("tr[id]");
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                telList.removeChild(item);
+            }
+        }
+    </script>
+</head>
+<body onload="initDB()">
+<section>
+    <h3>Tel List</h3>
+    <label for="idFrom">ID:</label>
+    <input type="search" id="idFrom"/><span> to </span><input type="search" id="idTo"/><br/>
+    <label for="nameSearch">Name:</label>
+    <input type="search" id="nameSearch" required/><br/>
+    <button onclick="search()">Search</button>
+    &nbsp;
+    <button onclick="clearAllData()">Clear Database</button>
+    <br/><br/>
+    <table id="telList">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Tel</th>
+            <th>Remark</th>
+        </tr>
+    </table>
+</section>
+<section>
+    <h3>Operation</h3>
+    <label for="id">ID：</label>
+    <input type="text" id="id" required/><br/>
+    <label for="name">Name：</label>
+    <input type="text" id="name" required/><br/>
+    <label for="tel">Tel：</label>
+    <input type="tel" id="tel"/><br/>
+    <label for="remark">Remark：</label>
+    <input type="text" id="remark"/><br/>
+    <button onclick="save()">Save</button>
+    <label for="overwrite">Overwrite</label>
+    <input type="checkbox" id="overwrite"/>
+</section>
+</body>
+</html>
